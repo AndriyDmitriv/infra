@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Кабінет користувача</title>
+    <link rel="stylesheet" href="{% static 'dashboard/css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Ласкаво просимо, {{ user.username }}</h1>
+        <nav>
+            <a href="{% url 'dashboard:dashboard' %}">Головна</a>
+            <a href="{% url 'dashboard:settings' %}">Налаштування клауда</a>
+            <a href="{% url 'dashboard:git_repository_list' %}">Налаштування репозиторію </a>
+            <a href="{% url 'authentication:logout' %}">Вихід</a>
+
+
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

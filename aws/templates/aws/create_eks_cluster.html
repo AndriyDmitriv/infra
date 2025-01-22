@@ -1,0 +1,101 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Створення EKS Кластеру{% endblock %}
+
+{% block content %}
+
+<main>
+    {% if error %}
+        <div style="color: red; margin-bottom: 15px; font-weight: bold;">
+            {{ error }}
+        </div>
+    {% elif success %}
+        <div style="color: green; margin-bottom: 15px; font-weight: bold;">
+            {{ success }}
+        </div>
+    {% endif %}
+
+
+
+    <h2>Створити EKS Кластер</h2>
+    
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+    
+    <h2>Створити EKS Кластер</h2>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+    
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create_cluster">
+    
+        <label>Регіон:</label>
+        <select name="region">
+            {% for region in regions %}
+                <option value="{{ region.0 }}">{{ region.1 }}</option>
+            {% endfor %}
+        </select>
+    
+        <label>VPC:</label>
+        <select name="vpc_id">
+            {% for vpc in vpcs %}
+                <option value="{{ vpc.VpcId }}">{{ vpc.VpcId }} ({{ vpc.CidrBlock }})</option>
+            {% endfor %}
+        </select>
+    
+        <label>Назва кластера:</label>
+        <input type="text" name="cluster_name" required>
+    
+        <label>Тип кластера:</label>
+        <select name="cluster_type">
+            <option value="public">Публічний</option>
+            <option value="private">Приватний</option>
+        </select>
+    
+        <button type="submit">Створити кластер</button>
+    </form>
+    
+ 
+    
+</main>
+
+<script>
+document.getElementById("region").addEventListener("change", function() {
+    const region = this.value;
+    const vpcSelect = document.getElementById("vpc");
+    const subnetSelect = document.getElementById("subnet");
+    const clusterType = document.querySelector('input[name="cluster_type"]:checked').value;
+
+    vpcSelect.innerHTML = "<option value=''>Завантаження...</option>";
+    subnetSelect.innerHTML = "";
+
+    if (region) {
+        fetch(`/aws/eks/get-vpcs-and-subnets/?region=${region}&subnet_type=${clusterType}`)
+            .then(response => response.json())
+            .then(data => {
+                vpcSelect.innerHTML = "<option value=''>Оберіть VPC</option>";
+                data.vpcs.forEach(vpc => {
+                    vpcSelect.innerHTML += `<option value="${vpc.VpcId}">${vpc.VpcId} (${vpc.CidrBlock})</option>`;
+                });
+
+                subnetSelect.innerHTML = "<option value=''>Оберіть Сабнет</option>";
+                data.subnets.forEach(subnet => {
+                    subnetSelect.innerHTML += `<option value="${subnet.SubnetId}">${subnet.SubnetId} (${subnet.CidrBlock})</option>`;
+                });
+            })
+            .catch(error => alert("Помилка завантаження VPC або Сабнетів: " + error));
+    }
+});
+
+</script>
+{% endblock %}

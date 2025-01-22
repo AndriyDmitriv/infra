@@ -1,0 +1,23 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<h3>Ваш хмарний провайдер: {{ profile.cloud_provider }}</h3>
+<p>Обліковий ключ: {{ profile.api_key }}</p>
+<p>Секретний ключ: {{ profile.secret_key }}</p>
+<a href="{% url 'dashboard:settings' %}" class="button">Змінити налаштування</a>
+
+<hr>
+<h3>Перейти до хмарного кабінету</h3>
+{% if profile.cloud_provider == "aws" %}
+    <a href="{% url 'aws:dashboard' %}" class="button">AWS Кабінет</a>
+{% elif profile.cloud_provider == "gcp" %}
+    <a href="{% url 'gcp:dashboard' %}" class="button">GCP Кабінет</a>
+{% elif profile.cloud_provider == "azure" %}
+    <a href="{% url 'azure:dashboard' %}" class="button">Azure Кабінет</a>
+{% else %}
+    <p>Обраного хмарного провайдера немає</p>
+{% endif %}
+<hr>
+<h3>Налаштування CI/CD</h3>
+<a href="{% url 'cicd:project_list' %}" class="button">Перейти до кабінету CI/CD</a>
+{% endblock %}

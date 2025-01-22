@@ -1,0 +1,14 @@
+
+replicaCount: 1
+image:
+  repository: nginx
+  tag: latest
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+hpa:
+  enabled: True
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80

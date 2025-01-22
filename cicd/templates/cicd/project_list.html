@@ -1,0 +1,25 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<h2>Список проектів</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Назва сервісу</th>
+            <th>URL репозиторію</th>
+            <th>Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in projects %}
+        <tr>
+            <td>{{ project.service_name }}</td>
+            <td>{{ project.repo_url }}</td>
+            <td>
+                <a href="{% url 'cicd:project_detail' project.id %}" class="btn btn-primary">Налаштування</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

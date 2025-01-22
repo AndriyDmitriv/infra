@@ -1,0 +1,39 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Створення VPC{% endblock %}
+
+{% block content %}
+<h1>Створення VPC</h1>
+
+{% if error %}
+<div style="color: red; margin-bottom: 15px;">{{ error }}</div>
+{% elif success %}
+<div style="color: green; margin-bottom: 15px;">{{ success }}</div>
+<ul>
+    {% for subnet in subnets %}
+    <li>{{ subnet.Type }} Subnet: {{ subnet.SubnetId }} ({{ subnet.CidrBlock }})</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <label for="region">Регіон:</label>
+    <select id="region" name="region" required>
+        {% for region in regions %}
+        <option value="{{ region.0 }}">{{ region.1 }}</option>
+        {% endfor %}
+    </select>
+    <label for="vpc_name">Назва VPC:</label>
+    <input type="text" id="vpc_name" name="vpc_name" placeholder="MyCustomVPC" required>
+
+    <label for="cidr_block">CIDR-блок:</label>
+    <input type="text" id="cidr_block" name="cidr_block" value="10.0.0.0/16" required>
+
+    <label for="subnet_count">Кількість сабнетів:</label>
+    <input type="number" id="subnet_count" name="subnet_count" value="2" min="2" required>
+    <p>Якщо вказати 2, буде створено 1 публічний і 1 приватний сабнет.</p>
+
+    <button type="submit">Створити VPC</button>
+</form>
+{% endblock %}

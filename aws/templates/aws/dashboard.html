@@ -1,0 +1,34 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}AWS Кабінет{% endblock %}
+
+{% block content %}
+<h2>AWS Кабінет</h2>
+
+<div class="action-buttons">
+    <h3>S3 Бакети</h3>
+    <a href="{% url 'aws:s3_list' %}" class="button">Переглянути бакети</a>
+    <a href="{% url 'aws:s3_create' %}" class="button">Створити новий бакет</a>
+</div>
+
+<hr>
+
+<div class="action-buttons">
+    <h3>EC2 Інстанси</h3>
+    <a href="{% url 'aws:ec2_list' %}" class="button">Переглянути інстанси</a>
+    <a href="{% url 'aws:ec2_create' %}" class="button">Створити новий інстанс</a>
+</div>
+<hr>
+<div class="action-buttons">
+    <h3>VPC</h3>
+    <a href="{% url 'aws:vpc_list' %}" class="button">Переглянути мережі</a>
+    <a href="{% url 'aws:vpc_create' %}" class="button">Створити нової мережі</a>
+</div>
+<hr>
+<div class="action-buttons">
+    <h3>EKS</h3>
+    <a href="{% url 'aws:eks_list' %}" class="button">Переглянути кластирі</a>
+    <a href="{% url 'aws:aws_create_eks' %}" class="button">Створити новий кластер</a>
+    <a href="{% url 'aws:aws_create_eks_nodegroup' %}" class="button">Створити нову node grup</a>
+</div>
+{% endblock %}

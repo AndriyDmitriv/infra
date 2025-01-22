@@ -1,0 +1,9 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Список S3 Бакетів{% endblock %}
+
+{% block content %}
+<h2>Список S3 Бакетів</h2>
+<p>Тут буде список ваших S3 бакетів.</p>
+<a href="{% url 'aws:dashboard' %}" class="button">Назад до AWS Кабінету</a>
+{% endblock %}

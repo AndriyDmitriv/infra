@@ -1,0 +1,17 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<h2>Синхронізація репозиторію з Helm-чартом</h2>
+
+{% if message %}
+<div class="alert {% if success %}alert-success{% else %}alert-danger{% endif %}">
+    {{ message }}
+</div>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Клонувати та пушити</button>
+</form>
+{% endblock %}

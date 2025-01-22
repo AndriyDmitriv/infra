@@ -1,0 +1,103 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Створення EKS Кластеру{% endblock %}
+
+{% block content %}
+<h1>Створення EKS Кластеру</h1>
+
+<main>
+    {% if error %}
+        <div style="color: red; margin-bottom: 15px; font-weight: bold;">
+            {{ error }}
+        </div>
+    {% elif success %}
+        <div style="color: green; margin-bottom: 15px; font-weight: bold;">
+            {{ success }}
+        </div>
+    {% endif %}
+
+
+
+
+    
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+    
+
+
+
+
+    
+    <h2>Створити Node Group</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        <label for="region">Регіон:</label>
+        <select name="region" required>
+            {% for region in regions %}
+                <option value="{{ region.0 }}">{{ region.1 }}</option>
+            {% endfor %}
+        </select>
+    
+        <label for="cluster_name">Назва кластера:</label>
+        <select name="cluster_name" required>
+            {% for cluster in clusters %}
+                <option value="{{ cluster.name }}">{{ cluster.name }}</option>
+            {% endfor %}
+        </select>
+    
+        <label for="node_group_name">Назва нод-пулу:</label>
+        <input type="text" name="node_group_name" required>
+    
+        <label for="instance_type">Тип інстансу:</label>
+        <select name="instance_type" required>
+            {% for instance_type in instance_types %}
+                <option value="{{ instance_type.0 }}">{{ instance_type.1 }}</option>
+            {% endfor %}
+        </select>
+    
+        <label for="node_count">Кількість нод:</label>
+        <input type="number" name="node_count" required min="1">
+    
+        <button type="submit">Створити</button>
+    </form>
+    
+    
+    
+    
+</main>
+
+<script>
+document.getElementById("region").addEventListener("change", function() {
+    const region = this.value;
+    const vpcSelect = document.getElementById("vpc");
+    const subnetSelect = document.getElementById("subnet");
+    const clusterType = document.querySelector('input[name="cluster_type"]:checked').value;
+
+    vpcSelect.innerHTML = "<option value=''>Завантаження...</option>";
+    subnetSelect.innerHTML = "";
+
+    if (region) {
+        fetch(`/aws/eks/get-vpcs-and-subnets/?region=${region}&subnet_type=${clusterType}`)
+            .then(response => response.json())
+            .then(data => {
+                vpcSelect.innerHTML = "<option value=''>Оберіть VPC</option>";
+                data.vpcs.forEach(vpc => {
+                    vpcSelect.innerHTML += `<option value="${vpc.VpcId}">${vpc.VpcId} (${vpc.CidrBlock})</option>`;
+                });
+
+                subnetSelect.innerHTML = "<option value=''>Оберіть Сабнет</option>";
+                data.subnets.forEach(subnet => {
+                    subnetSelect.innerHTML += `<option value="${subnet.SubnetId}">${subnet.SubnetId} (${subnet.CidrBlock})</option>`;
+                });
+            })
+            .catch(error => alert("Помилка завантаження VPC або Сабнетів: " + error));
+    }
+});
+
+</script>
+{% endblock %}

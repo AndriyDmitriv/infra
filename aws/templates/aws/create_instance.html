@@ -1,0 +1,118 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Створення EC2 Інстансу{% endblock %}
+
+{% block content %}
+<h1>Створення EC2 Інстансу</h1>
+
+    <title>Створення EC2 Інстансу</title>
+
+</head>
+<body>
+
+    <main>
+        {% if error %}
+            <div style="color: red; margin-bottom: 15px;">
+                {{ error }}
+            </div>
+        {% elif success %}
+            <div style="color: green; margin-bottom: 15px;">
+                {{ success }}
+            </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <label for="region">Регіон:</label>
+            <select id="region" name="region" required>
+                {% for region in regions %}
+                    <option value="{{ region.0 }}">{{ region.1 }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="vpc_id">VPC:</label>
+            <select id="vpc_id" name="vpc_id" required>
+                <option value="">Оберіть VPC</option>
+            </select>
+
+            <label for="subnet_id">Сабнет:</label>
+            <select id="subnet_id" name="subnet_id" required>
+                <option value="">Оберіть Сабнет</option>
+            </select>
+
+            <label for="ports">Порти (через кому):</label>
+            <input type="text" id="ports" name="ports" placeholder="22, 80, 443">
+            
+            <label for="ssh_key_name">Назва SSH ключа (опціонально):</label>
+            <input type="text" id="ssh_key_name" name="ssh_key_name" placeholder="MyKey">
+            
+            <label for="ssh_key_material">Вміст SSH ключа (опціонально):</label>
+            <textarea id="ssh_key_material" name="ssh_key_material" rows="5" placeholder="Вставте ваш приватний SSH-ключ"></textarea>
+        
+            <label for="instance_type">Тип інстансу:</label>
+            <select id="instance_type" name="instance_type" required>
+                {% for instance_type in instance_types %}
+                    <option value="{{ instance_type.0 }}">{{ instance_type.1 }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="ami_id">AMI ID:</label>
+            <select id="ami_id" name="ami_id" required>
+                {% for ami in amis %}
+                    <option value="{{ ami.0 }}">{{ ami.1 }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="volume_size">Розмір диска (GB):</label>
+            <input type="number" id="volume_size" name="volume_size" value="8" required>
+
+            <label for="instance_name">Назва інстансу:</label>
+            <input type="text" id="instance_name" name="instance_name" placeholder="MyInstance" required>
+
+            <button type="submit">Створити інстанс</button>
+        </form>
+    </main>
+</body>
+<script>
+    document.getElementById('region').addEventListener('change', function() {
+        const region = this.value;
+        const vpcSelect = document.getElementById('vpc_id');
+        const subnetSelect = document.getElementById('subnet_id');
+
+        // Очистити поточні дані
+        vpcSelect.innerHTML = '<option value="">Оберіть VPC</option>';
+        subnetSelect.innerHTML = '<option value="">Оберіть Сабнет</option>';
+
+        if (region) {
+            fetch(`/aws/get-vpcs-and-subnets/?region=${region}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    // Оновити VPC
+                    data.vpcs.forEach(vpc => {
+                        const option = document.createElement('option');
+                        option.value = vpc.VpcId;
+                        option.textContent = `${vpc.VpcId} (${vpc.CidrBlock})`;
+                        vpcSelect.appendChild(option);
+                    });
+
+                    // Оновити Сабнети
+                    data.subnets.forEach(subnet => {
+                        const option = document.createElement('option');
+                        option.value = subnet.SubnetId;
+                        option.textContent = `${subnet.SubnetId} (${subnet.CidrBlock})`;
+                        subnetSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Помилка завантаження даних:', error);
+                    alert('Не вдалося отримати дані VPC та Сабнетів.');
+                });
+        }
+    });
+</script>
+</html>
+{% endblock %}

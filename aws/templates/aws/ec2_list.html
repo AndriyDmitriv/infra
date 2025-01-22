@@ -1,0 +1,9 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Список EC2 Інстансів{% endblock %}
+
+{% block content %}
+<h2>Список EC2 Інстансів</h2>
+<p>Тут буде список ваших EC2 інстансів.</p>
+<a href="{% url 'aws:dashboard' %}" class="button">Назад до AWS Кабінету</a>
+{% endblock %}

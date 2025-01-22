@@ -1,0 +1,26 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<h2>Ваші Git-репозиторії</h2>
+<a href="{% url 'dashboard:git_repository_create' %}" class="btn btn-primary">Додати новий репозиторій</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>URL репозиторію</th>
+            <th>Дата створення</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for repo in repositories %}
+        <tr>
+            <td>{{ repo.repo_url }}</td>
+            <td>{{ repo.created_at }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">Немає репозиторіїв</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

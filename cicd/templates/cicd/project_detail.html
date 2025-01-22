@@ -1,0 +1,22 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<h2>Проект: {{ project.service_name }}</h2>
+<p><strong>Репозиторій:</strong> {{ project.repo_url }}</p>
+
+<hr>
+<h3>Налаштування Helm-чарту</h3>
+<form method="post" action="{% url 'cicd:create_helm_chart' %}">
+    {% csrf_token %}
+    {{ helm_form.as_p }}
+    <button type="submit" class="btn btn-success">Створити Helm-чарт</button>
+</form>
+
+<hr>
+<h3>Пуш у репозиторій</h3>
+<form method="post" action="{% url 'cicd:git_repository_sync' project.id %}">
+    {% csrf_token %}
+    {{ git_form.as_p }}
+    <button type="submit" class="btn btn-primary">Синхронізувати репозиторій</button>
+</form>
+{% endblock %}

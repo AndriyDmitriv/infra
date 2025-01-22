@@ -1,0 +1,41 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<h2>Створення Helm-чарту</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <a href="{% url 'git_repository_sync' repo_id=1 %}">Синхронізувати репозиторій</a>
+
+    <!-- Контейнер для ConfigMap -->
+    <div id="config-map-container">
+        <!-- Початково порожній, нові ряди будуть додані динамічно -->
+    </div>
+    <button type="button" id="add-config-map" class="btn btn-success">Додати ConfigMap</button>
+    <br><br>
+    <button type="submit" class="btn btn-primary">Створити</button>
+</form>
+
+<script>
+    // Динамічне додавання нових пар ключ-значення для ConfigMap
+    document.getElementById("add-config-map").addEventListener("click", function() {
+        const container = document.getElementById("config-map-container");
+
+        // Створюємо новий рядок для ключа і значення ConfigMap
+        const newRow = document.createElement("div");
+        newRow.classList.add("config-map-row");
+        newRow.style.marginBottom = "10px";
+
+        // Поля для ключа та значення ConfigMap
+        newRow.innerHTML = `
+            <div style="margin-bottom: 5px;">
+                <input type="text" name="config_map_keys" placeholder="Ключ" required style="margin-right: 10px; width: 200px;">
+                <input type="text" name="config_map_values" placeholder="Значення" required style="width: 200px;">
+            </div>
+        `;
+
+        // Додаємо новий рядок до контейнера
+        container.appendChild(newRow);
+    });
+</script>
+{% endblock %}

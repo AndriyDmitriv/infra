@@ -1,0 +1,61 @@
+{% extends "dashboard/base.html" %}
+
+
+{% block content %}
+<h2>Налаштування провайдера</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="id_cloud_provider">Хмарний провайдер</label>
+    {{ form.cloud_provider }}
+
+    <div id="aws-fields" style="display: none;">
+        <label for="id_aws_access_key">AWS Access Key</label>
+        {{ form.aws_access_key }}
+        <label for="id_aws_secret_key">AWS Secret Key</label>
+        {{ form.aws_secret_key }}
+    </div>
+
+    <div id="gcp-fields" style="display: none;">
+        <label for="id_gcp_key_file">GCP JSON Key File</label>
+        {{ form.gcp_key_file }}
+    </div>
+
+    <div id="azure-fields" style="display: none;">
+        <label for="id_azure_tenant_id">Azure Tenant ID</label>
+        {{ form.azure_tenant_id }}
+        <label for="id_azure_client_id">Azure Client ID</label>
+        {{ form.azure_client_id }}
+        <label for="id_azure_client_secret">Azure Client Secret</label>
+        {{ form.azure_client_secret }}
+        <label for="id_azure_subscription_id">Azure Subscription ID</label>
+        {{ form.azure_subscription_id }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+</form>
+
+<script>
+    const providerField = document.getElementById('id_cloud_provider');
+    const awsFields = document.getElementById('aws-fields');
+    const gcpFields = document.getElementById('gcp-fields');
+    const azureFields = document.getElementById('azure-fields');
+
+    function toggleFields() {
+        awsFields.style.display = 'none';
+        gcpFields.style.display = 'none';
+        azureFields.style.display = 'none';
+
+        if (providerField.value === 'aws') {
+            awsFields.style.display = 'block';
+        } else if (providerField.value === 'gcp') {
+            gcpFields.style.display = 'block';
+        } else if (providerField.value === 'azure') {
+            azureFields.style.display = 'block';
+        }
+    }
+
+    providerField.addEventListener('change', toggleFields);
+    toggleFields();  // Initialize
+</script>
+
+{% endblock %}
