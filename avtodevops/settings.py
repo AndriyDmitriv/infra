@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -26,6 +27,8 @@ SECRET_KEY = 'django-insecure-p^o+$40yr^0#9!bo$w&$m-^k4jrvsxjj@-+07qx@i6kelqn6qz
 DEBUG = True
 
 ALLOWED_HOSTS = []
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
 
 
 # Application definition
@@ -55,8 +58,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
    # 'avtodevops.middleware.RequireLoginMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ROOT_URLCONF = 'avtodevops.urls'
 
 TEMPLATES = [
